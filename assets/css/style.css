@@ -73,6 +73,7 @@ a { color: var(--blue-dark); text-decoration: none; }
 .panel h3 { font-size: 16px; margin-bottom: 12px; }
 
 /* Table */
+.tbl-scroll { width: 100%; overflow-x: auto; }
 .tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
 .tbl th, .tbl td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
 .tbl th { color: var(--muted); font-weight: 600; font-size: 13px; }

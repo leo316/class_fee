@@ -40,9 +40,16 @@ const DB = (() => {
 
   let state = load();
 
+  // 安全存储：localStorage 不可用时（如 file:// 直接打开、隐私模式）退化为内存存储
+  const mem = {};
+  const ls = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] != null ? mem[k] : null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } }
+  };
+
   function load() {
     try {
-      const raw = localStorage.getItem(KEY);
+      const raw = ls.get(KEY);
       if (!raw) return seed();
       const d = JSON.parse(raw);
       if (!d.members) return seed();
@@ -53,7 +60,7 @@ const DB = (() => {
   }
 
   function save() {
-    localStorage.setItem(KEY, JSON.stringify(state));
+    ls.set(KEY, JSON.stringify(state));
   }
 
   // ---- 用户 / 权限 ----

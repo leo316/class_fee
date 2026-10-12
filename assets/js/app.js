@@ -209,21 +209,23 @@
       </div>
       <div class="row-actions">${DB.isAdmin() ? `<button class="btn btn-primary" id="bulk">批量生成收缴</button><button class="btn btn-primary" id="addI">+ 单笔收缴</button>` : ""}</div>
       ${owed}
-      <div class="panel"><h3>收缴记录</h3><table class="tbl"><thead><tr><th>成员</th><th>金额</th><th>状态</th><th>方式</th><th>经手人</th><th>日期</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="panel"><h3>收缴记录</h3><div class="tbl-scroll"><table class="tbl"><thead><tr><th>成员</th><th>金额</th><th>状态</th><th>方式</th><th>经手人</th><th>日期</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table></div></div>
     `);
 
     if (DB.isAdmin()) {
-      $("#bulk").onclick = () => openModal("批量生成收缴", `
-        <p class="muted">将为每位在读成员生成一条未缴记录，之后逐条标记已缴。</p>
-        <label class="field"><span>每人金额</span><input id="b-amt" type="number" min="0" step="0.01" placeholder="如 50" /></label>
-        <label class="field"><span>备注</span><input id="b-note" placeholder="如 2026秋季班费" /></label>
-        <button class="btn btn-primary btn-block" id="b-save">生成</button>
-      `);
-      $("#b-save").onclick = () => {
-        const amt = parseFloat($("#b-amt").value);
-        if (!(amt > 0)) return toast("请输入有效金额");
-        DB.bulkCreateIncome(amt, $("#b-note").value.trim());
-        closeModal(); toast("已生成收缴记录"); renderIncome();
+      $("#bulk").onclick = () => {
+        openModal("批量生成收缴", `
+          <p class="muted">将为每位在读成员生成一条未缴记录，之后逐条标记已缴。</p>
+          <label class="field"><span>每人金额</span><input id="b-amt" type="number" min="0" step="0.01" placeholder="如 50" /></label>
+          <label class="field"><span>备注</span><input id="b-note" placeholder="如 2026秋季班费" /></label>
+          <button class="btn btn-primary btn-block" id="b-save">生成</button>
+        `);
+        $("#b-save").onclick = () => {
+          const amt = parseFloat($("#b-amt").value);
+          if (!(amt > 0)) return toast("请输入有效金额");
+          DB.bulkCreateIncome(amt, $("#b-note").value.trim());
+          closeModal(); toast("已生成收缴记录"); renderIncome();
+        };
       };
       $("#addI").onclick = () => incomeForm();
       view.querySelectorAll("[data-act='pay']").forEach((b) => (b.onclick = () => {
@@ -284,7 +286,7 @@
 
     view.innerHTML = page("支出记录", `
       <div class="row-actions">${DB.isAdmin() ? `<button class="btn btn-primary" id="addE">+ 记一笔支出</button>` : ""}<span class="muted">累计支出 ¥${money(DB.totals().expense)}</span></div>
-      <div class="panel"><table class="tbl"><thead><tr><th>日期</th><th>用途</th><th>分类</th><th>金额</th><th>经手人</th><th>凭证</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="panel"><div class="tbl-scroll"><table class="tbl"><thead><tr><th>日期</th><th>用途</th><th>分类</th><th>金额</th><th>经手人</th><th>凭证</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table></div></div>
     `);
 
     if (DB.isAdmin()) {
@@ -345,7 +347,7 @@
 
     view.innerHTML = page("收支流水", `
       <div class="row-actions">${types}<button class="btn btn-ghost" id="exp">导出 CSV</button></div>
-      <div class="panel"><table class="tbl"><thead><tr><th>日期</th><th>类型</th><th>摘要</th><th>分类</th><th>金额</th><th>经手人</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="panel"><div class="tbl-scroll"><table class="tbl"><thead><tr><th>日期</th><th>类型</th><th>摘要</th><th>分类</th><th>金额</th><th>经手人</th></tr></thead><tbody>${rows}</tbody></table></div></div>
     `);
     $("#exp").onclick = () => {
       const head = "类型,日期,摘要,分类,金额,经手人\n";
